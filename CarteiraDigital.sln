@@ -7,6 +7,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CarteiraDigital.API", "Cart
 	ProjectSection(ProjectDependencies) = postProject
 		{44440D8C-3033-4EED-B020-4A42DBAB57D4} = {44440D8C-3033-4EED-B020-4A42DBAB57D4}
 		{9AC78284-A56F-44BD-AEA4-BE05C8F6B04E} = {9AC78284-A56F-44BD-AEA4-BE05C8F6B04E}
+		{AA9DE6E3-E537-4658-8C38-498FCB3FC0BF} = {AA9DE6E3-E537-4658-8C38-498FCB3FC0BF}
 	EndProjectSection
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CarteiraDigital.Core", "CarteiraDigital.Core\CarteiraDigital.Core.csproj", "{9AC78284-A56F-44BD-AEA4-BE05C8F6B04E}"
@@ -18,7 +19,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CarteiraDigital.Infrastruct
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CarteiraDigital.Application", "CarteiraDigital.Application\CarteiraDigital.Application.csproj", "{AA9DE6E3-E537-4658-8C38-498FCB3FC0BF}"
 	ProjectSection(ProjectDependencies) = postProject
-		{4F99320B-E6E4-42CD-93EB-C804D0CABF85} = {4F99320B-E6E4-42CD-93EB-C804D0CABF85}
+		{9AC78284-A56F-44BD-AEA4-BE05C8F6B04E} = {9AC78284-A56F-44BD-AEA4-BE05C8F6B04E}
 	EndProjectSection
 EndProject
 Global

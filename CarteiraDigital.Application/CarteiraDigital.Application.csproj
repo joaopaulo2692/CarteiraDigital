@@ -7,7 +7,11 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\CarteiraDigital\CarteiraDigital.API.csproj" />
+    <PackageReference Include="FluentValidation.AspNetCore" Version="11.3.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\CarteiraDigital.Core\CarteiraDigital.Core.csproj" />
   </ItemGroup>
 
 </Project>

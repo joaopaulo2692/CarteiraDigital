@@ -24,23 +24,50 @@ namespace CarteiraDigital.API.Controllers
         [HttpPost]
         public async Task<ActionResult<TransactionResponse>> CreateTransaction(CreateTransactionRequest request)
         {
-            var userId = GetUserId();
-            var response = await _transactionService.CreateTransactionAsync(userId, request);
-            return Ok(response);
+            try
+            {
+                var userId = GetUserId();
+                var response = await _transactionService.CreateTransactionAsync(userId, request);
+
+                if (response == null)
+                    return BadRequest("A transação não pôde ser concluída.");
+
+                return Ok(response);
+            }
+            catch (ArgumentException ex)
+            {
+                return BadRequest(new { message = ex.Message });
+            }
+            catch (KeyNotFoundException ex)
+            {
+                return NotFound(new { message = ex.Message });
+            }
+            catch (Exception)
+            {
+                return StatusCode(500, new { message = "Erro interno no servidor." });
+            }
         }
 
         [HttpGet]
         public async Task<ActionResult<TransactionListResponse>> GetTransactions([FromQuery] DateTime? startDate, [FromQuery] DateTime? endDate)
         {
-            var userId = GetUserId();
-            var filter = new TransactionFilterRequest
+            try
             {
-                StartDate = startDate,
-                EndDate = endDate
-            };
+                var userId = GetUserId();
 
-            var response = await _transactionService.GetTransactionsAsync(userId, filter);
-            return Ok(response);
+                var filter = new TransactionFilterRequest
+                {
+                    StartDate = startDate,
+                    EndDate = endDate
+                };
+
+                var response = await _transactionService.GetTransactionsAsync(userId, filter);
+                return Ok(response);
+            }
+            catch (Exception)
+            {
+                return StatusCode(500, new { message = "Erro ao buscar transações." });
+            }
         }
     }
 }

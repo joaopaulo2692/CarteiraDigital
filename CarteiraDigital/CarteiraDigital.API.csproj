@@ -19,6 +19,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\CarteiraDigital.Application\CarteiraDigital.Application.csproj" />
     <ProjectReference Include="..\CarteiraDigital.Infrastructure\CarteiraDigital.Infrastructure.csproj" />
   </ItemGroup>
 

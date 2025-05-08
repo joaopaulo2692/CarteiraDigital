@@ -17,17 +17,43 @@ namespace CarteiraDigital.API.Controllers
         }
 
         [HttpPost("login")]
-        public async Task<ActionResult<LoginResponse>> Login(LoginRequest request)
+        public async Task<IActionResult> Login(LoginRequest request)
         {
-            var response = await _authService.AuthenticateAsync(request);
-            return Ok(response);
+            try
+            {
+                var response = await _authService.AuthenticateAsync(request);
+                return Ok(response);
+            }
+            catch (UnauthorizedAccessException ex)
+            {
+                return Unauthorized(new { message = ex.Message });
+            }
+            catch (ApplicationException ex)
+            {
+                return BadRequest(new { message = ex.Message });
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, new { message = "Erro interno no servidor", details = ex.Message });
+            }
         }
 
         [HttpPost("register")]
-        public async Task<ActionResult<UserResponse>> Register(CreateUserRequest request)
+        public async Task<IActionResult> Register(CreateUserRequest request)
         {
-            var response = await _authService.RegisterAsync(request);
-            return CreatedAtAction(nameof(Register), new { id = response.Id }, response);
+            try
+            {
+                var response = await _authService.RegisterAsync(request);
+                return CreatedAtAction(nameof(Register), new { id = response.Id }, response);
+            }
+            catch (ApplicationException ex)
+            {
+                return BadRequest(new { message = ex.Message });
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, new { message = "Erro interno no servidor", details = ex.Message });
+            }
         }
     }
 }

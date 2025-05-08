@@ -24,17 +24,48 @@ namespace CarteiraDigital.API.Controllers
         [HttpGet("balance")]
         public async Task<ActionResult<WalletBalanceResponse>> GetBalance()
         {
-            var userId = GetUserId();
-            var response = await _walletService.GetBalanceAsync(userId);
-            return Ok(response);
+            try
+            {
+                var userId = GetUserId();
+                var response = await _walletService.GetBalanceAsync(userId);
+
+                if (response == null)
+                    return NotFound(new { message = "Carteira não encontrada." });
+
+                return Ok(response);
+            }
+            catch (KeyNotFoundException ex)
+            {
+                return NotFound(new { message = ex.Message });
+            }
+            catch (Exception)
+            {
+                return StatusCode(500, new { message = "Erro ao consultar saldo." });
+            }
         }
 
         [HttpPost("add")]
         public async Task<ActionResult<AddBalanceResponse>> AddBalance(AddBalanceRequest request)
         {
-            var userId = GetUserId();
-            var response = await _walletService.AddBalanceAsync(userId, request);
-            return Ok(response);
+            try
+            {
+                var userId = GetUserId();
+                var response = await _walletService.AddBalanceAsync(userId, request);
+
+                return Ok(response);
+            }
+            catch (ArgumentException ex)
+            {
+                return BadRequest(new { message = ex.Message });
+            }
+            catch (KeyNotFoundException ex)
+            {
+                return NotFound(new { message = ex.Message });
+            }
+            catch (Exception)
+            {
+                return StatusCode(500, new { message = "Erro ao adicionar saldo." });
+            }
         }
     }
 }
