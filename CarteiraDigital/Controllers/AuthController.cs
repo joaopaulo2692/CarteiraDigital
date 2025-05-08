@@ -1,7 +1,6 @@
 ﻿using CarteiraDigital.Application.DTOs.Auth;
 using CarteiraDigital.Application.DTOs.Users;
 using CarteiraDigital.Application.Interfaces;
-using CarteiraDigital.Core.DTOs;
 using Microsoft.AspNetCore.Mvc;
 
 namespace CarteiraDigital.API.Controllers
