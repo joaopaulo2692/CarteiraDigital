@@ -2,12 +2,13 @@
 using CarteiraDigital.Application.Interfaces;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 
 namespace CarteiraDigital.API.Controllers
 {
     [ApiController]
-    [Authorize]
+    //[Authorize]
     [Route("api/[controller]")]
     public class TransactionController : ControllerBase
     {
@@ -18,15 +19,25 @@ namespace CarteiraDigital.API.Controllers
             _transactionService = transactionService;
         }
 
-        private string GetUserId() =>
-            User.FindFirstValue(ClaimTypes.NameIdentifier)!;
+        private string GetUserId()
+        {
+            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            var claims = User.Claims.ToList();
+            // Todas estas formas devem funcionar agora:
 
+            Claim idUser = User.FindFirst(ClaimTypes.NameIdentifier);
+            if (string.IsNullOrEmpty(userId))
+                throw new UnauthorizedAccessException("Usuário não autenticado.");
+            return userId;
+        }
         [HttpPost]
         public async Task<ActionResult<TransactionResponse>> CreateTransaction(CreateTransactionRequest request)
         {
             try
             {
                 var userId = GetUserId();
+               
+
                 var response = await _transactionService.CreateTransactionAsync(userId, request);
 
                 if (response == null)
@@ -54,7 +65,7 @@ namespace CarteiraDigital.API.Controllers
             try
             {
                 var userId = GetUserId();
-
+                //var userId = User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier)?.Value;
                 var filter = new TransactionFilterRequest
                 {
                     StartDate = startDate,

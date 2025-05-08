@@ -1,6 +1,7 @@
 ﻿using CarteiraDigital.Application.DTOs.Auth;
 using CarteiraDigital.Application.DTOs.Users;
 using CarteiraDigital.Application.Interfaces;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace CarteiraDigital.API.Controllers
@@ -54,6 +55,14 @@ namespace CarteiraDigital.API.Controllers
             {
                 return StatusCode(500, new { message = "Erro interno no servidor", details = ex.Message });
             }
+        }
+
+        [AllowAnonymous]
+        [HttpGet("test-auth")]
+        public IActionResult TestAuth()
+        {
+            var authHeader = HttpContext.Request.Headers["Authorization"];
+            return Ok(new { authHeader });
         }
     }
 }

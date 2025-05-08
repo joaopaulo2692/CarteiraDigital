@@ -16,6 +16,7 @@ namespace CarteiraDigital.Application.Services
     {
         private readonly UserManager<ApplicationUser> _userManager;
         private readonly IConfiguration _configuration;
+        private readonly SignInManager<ApplicationUser> _signInManager;
 
         public AuthService(UserManager<ApplicationUser> userManager, IConfiguration configuration)
         {
@@ -23,35 +24,86 @@ namespace CarteiraDigital.Application.Services
             _configuration = configuration;
         }
 
+
         public async Task<LoginResponse> AuthenticateAsync(LoginRequest request)
         {
             var user = await _userManager.FindByEmailAsync(request.Email);
             if (user == null || !await _userManager.CheckPasswordAsync(user, request.Password))
                 throw new UnauthorizedAccessException("Credenciais inválidas.");
 
-            var tokenHandler = new JwtSecurityTokenHandler();
-            var key = Encoding.UTF8.GetBytes(_configuration["Jwt:Key"]!);
-            var expires = DateTime.UtcNow.AddHours(2);
-
-            var tokenDescriptor = new SecurityTokenDescriptor
+            var claims = new[]
             {
-                Subject = new ClaimsIdentity(new[]
-                {
-                    new Claim(ClaimTypes.NameIdentifier, user.Id),
-                    new Claim(ClaimTypes.Email, user.Email)
-                }),
-                Expires = expires,
-                SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(key), SecurityAlgorithms.HmacSha256Signature)
-            };
+        // Claim principal em múltiplos formatos
+        new Claim(ClaimTypes.NameIdentifier, user.Id),  // Padrão ASP.NET Core
+        new Claim(JwtRegisteredClaimNames.Sub, user.Id),  // Padrão JWT
+        new Claim("uid", user.Id),  // Fallback customizado
+        
+        // Claims adicionais
+        new Claim(ClaimTypes.Email, user.Email!),
+        new Claim(ClaimTypes.Name, user.UserName!),
+        new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString())
+    };
 
-            var token = tokenHandler.CreateToken(tokenDescriptor);
+            var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_configuration["Jwt:Key"]!));
+            var creds = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
+
+            var token = new JwtSecurityToken(
+                issuer: _configuration["Jwt:ValidIssuer"],
+                audience: _configuration["Jwt:ValidAudience"],
+                claims: claims,
+                expires: DateTime.UtcNow.AddHours(2),
+                signingCredentials: creds
+            );
 
             return new LoginResponse
             {
-                Token = tokenHandler.WriteToken(token),
-                Expiration = expires
+                Token = new JwtSecurityTokenHandler().WriteToken(token),
+                Expiration = token.ValidTo
             };
         }
+
+
+        //    public async Task<LoginResponse> AuthenticateAsync(LoginRequest request)
+        //    {
+        //        var user = await _userManager.FindByEmailAsync(request.Email);
+
+        //        if (user == null || !await _userManager.CheckPasswordAsync(user, request.Password))
+        //            throw new UnauthorizedAccessException("Credenciais inválidas.");
+
+        //        var email = user.Email ?? throw new Exception("Usuário sem e-mail cadastrado.");
+
+        //        var authClaims = new List<Claim>
+        //{
+        //    new Claim(ClaimTypes.NameIdentifier, user.Id),
+        //    new Claim(ClaimTypes.Name, user.Email),
+        //    new Claim("username", user.UserName),
+        //    new Claim("email", user.Email)
+        //};
+
+        //        // Recupera o tempo de expiração a partir da configuração, valor padrão de 20 minutos
+
+        //        int tokenMinutes = 20;
+
+        //        var authSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_configuration["JWT:Key"]));
+        //        var credentials = new SigningCredentials(authSigningKey, SecurityAlgorithms.HmacSha512);
+
+        //        var expiration = DateTime.UtcNow.AddMinutes(tokenMinutes);
+
+        //        var token = new JwtSecurityToken(
+        //            expires: expiration,
+        //            claims: authClaims,
+        //            signingCredentials: credentials
+        //        );
+
+        //        var tokenString = new JwtSecurityTokenHandler().WriteToken(token);
+
+        //        return new LoginResponse
+        //        {
+        //            Token = tokenString,
+        //            Expiration = expiration
+        //        };
+        //    }
+
 
         public async Task<UserResponse> RegisterAsync(CreateUserRequest request)
         {
