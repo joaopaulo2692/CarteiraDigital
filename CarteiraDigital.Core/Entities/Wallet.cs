@@ -9,7 +9,7 @@ namespace CarteiraDigital.Core.Entities
 {
     public class Wallet
     {
-        public Guid Id { get; set; } = Guid.NewGuid();
+        public int Id { get; set; }
         public decimal Balance { get; set; } = 0m;
 
         public string ApplicationUserId { get; set; }

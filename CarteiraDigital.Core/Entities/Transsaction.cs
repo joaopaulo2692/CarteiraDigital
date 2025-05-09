@@ -8,14 +8,14 @@ namespace CarteiraDigital.Core.Entities
 {
     public class Transaction
     {
-        public Guid Id { get; set; } = Guid.NewGuid();
+        public int Id { get; set; } 
         public decimal Amount { get; set; }
         public DateTime Timestamp { get; set; } = DateTime.UtcNow;
 
-        public Guid FromWalletId { get; set; }
+        public int FromWalletId { get; set; }
         public Wallet FromWallet { get; set; } = null!;
 
-        public Guid ToWalletId { get; set; }
+        public int ToWalletId { get; set; }
         public Wallet ToWallet { get; set; } = null!;
     }
 

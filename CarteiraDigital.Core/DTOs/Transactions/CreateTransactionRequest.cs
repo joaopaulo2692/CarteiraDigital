@@ -8,7 +8,7 @@ namespace CarteiraDigital.Application.DTOs.Transactions
 {
     public class CreateTransactionRequest
     {
-        public Guid DestinationUserId { get; set; }
+        public int DestinationUserId { get; set; }
         public decimal Amount { get; set; }
     }
 }

@@ -92,21 +92,23 @@ namespace CarteiraDigital.Infrastructure.Migrations
 
             modelBuilder.Entity("CarteiraDigital.Core.Entities.Transaction", b =>
                 {
-                    b.Property<Guid>("Id")
+                    b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("uuid");
+                        .HasColumnType("integer");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
 
                     b.Property<decimal>("Amount")
                         .HasColumnType("numeric");
 
-                    b.Property<Guid>("FromWalletId")
-                        .HasColumnType("uuid");
+                    b.Property<int>("FromWalletId")
+                        .HasColumnType("integer");
 
                     b.Property<DateTime>("Timestamp")
                         .HasColumnType("timestamp with time zone");
 
-                    b.Property<Guid>("ToWalletId")
-                        .HasColumnType("uuid");
+                    b.Property<int>("ToWalletId")
+                        .HasColumnType("integer");
 
                     b.HasKey("Id");
 
@@ -119,9 +121,11 @@ namespace CarteiraDigital.Infrastructure.Migrations
 
             modelBuilder.Entity("CarteiraDigital.Core.Entities.Wallet", b =>
                 {
-                    b.Property<Guid>("Id")
+                    b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("uuid");
+                        .HasColumnType("integer");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
 
                     b.Property<string>("ApplicationUserId")
                         .IsRequired()

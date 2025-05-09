@@ -173,6 +173,8 @@ app.Use(async (context, next) =>
 app.UseAuthentication(); // tem que vir antes do UseAuthorization
 app.UseAuthorization();
 
+
+
 app.MapControllers();
 
 app.Run();

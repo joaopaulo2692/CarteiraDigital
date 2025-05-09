@@ -7,7 +7,7 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace CarteiraDigital.Infrastructure.Migrations
 {
     /// <inheritdoc />
-    public partial class AddFristMigration : Migration
+    public partial class AddDataBase : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -162,7 +162,8 @@ namespace CarteiraDigital.Infrastructure.Migrations
                 name: "Wallets",
                 columns: table => new
                 {
-                    Id = table.Column<Guid>(type: "uuid", nullable: false),
+                    Id = table.Column<int>(type: "integer", nullable: false)
+                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
                     Balance = table.Column<decimal>(type: "numeric", nullable: false),
                     ApplicationUserId = table.Column<string>(type: "text", nullable: false)
                 },
@@ -181,11 +182,12 @@ namespace CarteiraDigital.Infrastructure.Migrations
                 name: "Transactions",
                 columns: table => new
                 {
-                    Id = table.Column<Guid>(type: "uuid", nullable: false),
+                    Id = table.Column<int>(type: "integer", nullable: false)
+                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
                     Amount = table.Column<decimal>(type: "numeric", nullable: false),
                     Timestamp = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
-                    FromWalletId = table.Column<Guid>(type: "uuid", nullable: false),
-                    ToWalletId = table.Column<Guid>(type: "uuid", nullable: false)
+                    FromWalletId = table.Column<int>(type: "integer", nullable: false),
+                    ToWalletId = table.Column<int>(type: "integer", nullable: false)
                 },
                 constraints: table =>
                 {

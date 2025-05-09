@@ -8,7 +8,7 @@ namespace CarteiraDigital.Application.DTOs.Transactions
 {
     public class TransactionResponse
     {
-        public Guid Id { get; set; }
+        public int Id { get; set; }
         public decimal Amount { get; set; }
         public DateTime Timestamp { get; set; }
 
