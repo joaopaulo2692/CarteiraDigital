@@ -17,6 +17,10 @@ namespace CarteiraDigital.API.Controllers
             _authService = authService;
         }
 
+
+        /// <summary>
+        /// Realiza o login do usuário e retorna um token JWT.
+        /// </summary>
         [HttpPost("login")]
         public async Task<IActionResult> Login(LoginRequest request)
         {
@@ -39,6 +43,10 @@ namespace CarteiraDigital.API.Controllers
             }
         }
 
+
+        /// <summary>
+        /// Realiza o registro de usuário.
+        /// </summary>
         [HttpPost("register")]
         public async Task<IActionResult> Register(CreateUserRequest request)
         {
@@ -57,6 +65,9 @@ namespace CarteiraDigital.API.Controllers
             }
         }
 
+        /// <summary>
+        /// Testes de Autenticação
+        /// </summary>
         [AllowAnonymous]
         [HttpGet("test-auth")]
         public IActionResult TestAuth()

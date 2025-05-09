@@ -8,7 +8,6 @@ using System.Security.Claims;
 namespace CarteiraDigital.API.Controllers
 {
     [ApiController]
-    //[Authorize]
     [Route("api/[controller]")]
     public class TransactionController : ControllerBase
     {
@@ -19,25 +18,26 @@ namespace CarteiraDigital.API.Controllers
             _transactionService = transactionService;
         }
 
+        /// <summary>
+        /// Recupera o ID do usuário autenticado a partir do token JWT.
+        /// </summary>
         private string GetUserId()
         {
             var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
-            var claims = User.Claims.ToList();
-            // Todas estas formas devem funcionar agora:
-
-            Claim idUser = User.FindFirst(ClaimTypes.NameIdentifier);
             if (string.IsNullOrEmpty(userId))
                 throw new UnauthorizedAccessException("Usuário não autenticado.");
             return userId;
         }
+
+        /// <summary>
+        /// Cria uma nova transação entre duas carteiras digitais.
+        /// </summary>
         [HttpPost]
         public async Task<ActionResult<TransactionResponse>> CreateTransaction(CreateTransactionRequest request)
         {
             try
             {
                 var userId = GetUserId();
-               
-
                 var response = await _transactionService.CreateTransactionAsync(userId, request);
 
                 if (response == null)
@@ -53,19 +53,21 @@ namespace CarteiraDigital.API.Controllers
             {
                 return NotFound(new { message = ex.Message });
             }
-            catch (Exception)
+            catch (Exception ex)
             {
-                return StatusCode(500, new { message = "Erro interno no servidor." });
+                return StatusCode(500, new { message = ex.Message });
             }
         }
 
+        /// <summary>
+        /// Obtém uma lista de transações realizadas pelo usuário autenticado.
+        /// </summary>
         [HttpGet]
         public async Task<ActionResult<TransactionListResponse>> GetTransactions([FromQuery] DateTime? startDate, [FromQuery] DateTime? endDate)
         {
             try
             {
                 var userId = GetUserId();
-                //var userId = User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier)?.Value;
                 var filter = new TransactionFilterRequest
                 {
                     StartDate = startDate,
