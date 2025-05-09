@@ -3,6 +3,8 @@ using CarteiraDigital.Application.DTOs.Users;
 using CarteiraDigital.Application.Interfaces;
 
 using CarteiraDigital.Core.Entities;
+using CarteiraDigital.Core.Interface.Repositories;
+using CarteiraDigital.Infrastructure.Repositories;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
@@ -17,11 +19,13 @@ namespace CarteiraDigital.Application.Services
         private readonly UserManager<ApplicationUser> _userManager;
         private readonly IConfiguration _configuration;
         private readonly SignInManager<ApplicationUser> _signInManager;
+        private readonly IWalletRepository _walletRepository;
 
-        public AuthService(UserManager<ApplicationUser> userManager, IConfiguration configuration)
+        public AuthService(UserManager<ApplicationUser> userManager, IConfiguration configuration, IWalletRepository walletRepository)
         {
             _userManager = userManager;
             _configuration = configuration;
+            _walletRepository = walletRepository;
         }
 
 
@@ -118,11 +122,29 @@ namespace CarteiraDigital.Application.Services
             if (!result.Succeeded)
                 throw new Exception(string.Join(", ", result.Errors.Select(e => e.Description)));
 
+            //return new UserResponse
+            //{
+            //    Id = Guid.Parse(user.Id),
+            //    Name = user.Name,
+            //    Email = user.Email
+            //};
+            if (!result.Succeeded)
+                throw new Exception("Erro ao criar usuário: " + string.Join("; ", result.Errors.Select(e => e.Description)));
+
+            // ✅ Criação da carteira automaticamente
+            var wallet = new Wallet
+            {
+                ApplicationUserId = user.Id,
+                Balance = 0
+            };
+
+            await _walletRepository.CreateAsync(wallet);
+
             return new UserResponse
             {
-                Id = Guid.Parse(user.Id),
-                Name = user.Name,
-                Email = user.Email
+                Id = user.Id,
+                Email = user.Email,
+                Name = user.Name
             };
         }
     }

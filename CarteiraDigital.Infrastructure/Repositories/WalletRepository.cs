@@ -31,5 +31,13 @@ namespace CarteiraDigital.Infrastructure.Repositories
 
         public async Task SaveChangesAsync() =>
             await _context.SaveChangesAsync();
+
+        public async Task CreateAsync(Wallet wallet)
+        {
+            await _context.Wallets.AddAsync(wallet);
+            await _context.SaveChangesAsync();
+        }
     }
+
+
 }

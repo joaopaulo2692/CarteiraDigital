@@ -18,7 +18,7 @@ namespace CarteiraDigital.Application.Services
             var user = await _repo.GetByIdAsync(id);
             return user == null ? null : new UserResponse
             {
-                Id = Guid.Parse(user.Id),
+                Id = user.Id,
                 Name = user.Name,
                 Email = user.Email
             };
@@ -29,7 +29,7 @@ namespace CarteiraDigital.Application.Services
             var user = await _repo.GetByEmailAsync(email);
             return user == null ? null : new UserResponse
             {
-                Id = Guid.Parse(user.Id),
+                Id = user.Id,
                 Name = user.Name,
                 Email = user.Email
             };
